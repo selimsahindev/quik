@@ -8,8 +8,7 @@ namespace quik.Runtime.Services.Scriptables
     public class SceneServiceConfig : ScriptableObject
     {
         [Header("Scene-Specific Service Registration")]
-        [SerializeField]
-        private List<SerializedServiceEntry> services = new();
+        [SerializeField] private List<SerializedServiceEntry> services = new();
 
         public void RegisterAll(IServiceProvider provider)
         {

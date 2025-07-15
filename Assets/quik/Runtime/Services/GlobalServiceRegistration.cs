@@ -1,4 +1,5 @@
 using quik.Runtime.Services.Interfaces;
+using uniq.Demo;
 
 namespace quik.Runtime.Services
 {
@@ -7,7 +8,9 @@ namespace quik.Runtime.Services
         public static void RegisterAll(IServiceProvider provider)
         {
             // Register your global game services here using:
-            // provider.Register<T>(T service)
+            // provider.Register<TInterface, TConcrete>()
+            
+            provider.Register<IDemoService, DemoService>();
         }
     }
 }

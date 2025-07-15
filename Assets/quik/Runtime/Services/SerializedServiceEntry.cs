@@ -1,8 +1,8 @@
 using System;
 using quik.Runtime.Services.Interfaces;
+using UnityEditor;
 using UnityEngine;
 using IServiceProvider = quik.Runtime.Services.Interfaces.IServiceProvider;
-using Object = UnityEngine.Object;
 
 namespace quik.Runtime.Services
 {
@@ -10,54 +10,75 @@ namespace quik.Runtime.Services
     public class SerializedServiceEntry
     {
         [Tooltip("Must implement at least one known interface.")]
-        public Object serviceObject;
+        public MonoScript script;
         
         [Header("Optional"), Tooltip("Optional override for interface type if multiple are implemented")]
         public string interfaceTypeName;
-        
+
         /// <summary>
         /// Registers the service to the provider with interface-based registration.
         /// </summary>
         /// <param name="provider">The service provider to register the service with.</param>
         public void RegisterTo(IServiceProvider provider)
         {
-            if (serviceObject == null)
+            if (script == null)
             {
                 return;
             }
-            
-            // Ensure the serviceObject implements at least one interface
-            var interfaces = serviceObject.GetType().GetInterfaces();
-            Type interfaceType = null;
 
-            // If user manually specified the interface type, use that
+            var type = script.GetClass();
+            if (type == null)
+            {
+                Debug.LogWarning("[SerializedServiceEntry] Script has no class.");
+                return;
+            }
+            
+            // Create instance via Activator
+            object instance = null;
+            try
+            {
+                instance = Activator.CreateInstance(type);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[SerializedServiceEntry] Failed to create instance of {type.Name}: {e.Message}");
+                return;
+            }
+
+            if (instance == null)
+            {
+                Debug.LogError($"[SerializedServiceEntry] Could not instantiate {type.Name}");
+                return;
+            }
+            
+            var interfaces = type.GetInterfaces();
+            Type interfaceType = null;
+            
             if (!string.IsNullOrEmpty(interfaceTypeName))
             {
                 interfaceType = Type.GetType(interfaceTypeName);
             }
-
-            // Otherwise, try to pick the first valid interface
+            
             if (interfaceType == null)
             {
                 foreach (var i in interfaces)
                 {
-                    if (i != typeof(IInjectable) && !typeof(UnityEngine.Object).IsAssignableFrom(i))
+                    if (i != typeof(IInjectable) && i != typeof(IDisposable))
                     {
                         interfaceType = i;
                         break;
                     }
                 }
             }
-
-            // If an interface was found, register the service
+            
             if (interfaceType != null)
             {
-                provider.Register(interfaceType, serviceObject);
-                Debug.Log($"[SerializedServiceEntry] Registered {interfaceType.Name} from {serviceObject.name}");
+                provider.Register(interfaceType, instance);
+                Debug.Log($"[SerializedServiceEntry] Registered {interfaceType.Name} from script {type.Name}");
             }
             else
             {
-                Debug.LogWarning($"[SerializedServiceEntry] {serviceObject.name} doesn't implement a usable interface.");
+                Debug.LogWarning($"[SerializedServiceEntry] {type.Name} doesn't implement a usable interface.");
             }
         }
     }
