@@ -14,6 +14,7 @@ namespace quik.Runtime.Core.Bootstrappers
         protected override void Awake()
         {
             InitializeServiceProvider();
+            InitializeServiceLocator();
             RegisterGlobalServices();
             InjectSceneObjects();
             LoadNextScene();
@@ -24,10 +25,15 @@ namespace quik.Runtime.Core.Bootstrappers
             _provider = new ServiceProvider();
             ServiceLocator.Init(_provider);
         }
+
+        private void InitializeServiceLocator()
+        {
+            ServiceLocator.Init(_provider);
+        }
         
         private void RegisterGlobalServices()
         {
-            GlobalServiceRegistration.RegisterAll(_provider);
+            GlobalServiceRegistry.RegisterAll(_provider);
         }
         
         private void InjectSceneObjects()

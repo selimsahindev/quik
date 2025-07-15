@@ -3,7 +3,7 @@ using uniq.Demo;
 
 namespace quik.Runtime.Services
 {
-    public static class GlobalServiceRegistration
+    public static class GlobalServiceRegistry
     {
         public static void RegisterAll(IServiceProvider provider)
         {
