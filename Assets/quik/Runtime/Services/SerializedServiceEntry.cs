@@ -34,7 +34,8 @@ namespace quik.Runtime.Services
             }
             
             // Create instance via Activator
-            object instance = null;
+            object instance;
+            
             try
             {
                 instance = Activator.CreateInstance(type);
