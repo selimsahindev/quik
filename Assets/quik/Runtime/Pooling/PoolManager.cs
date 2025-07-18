@@ -9,7 +9,7 @@ namespace quik.Runtime.Pooling
     /// Central registry and dispatcher for object pools identified by string keys.
     /// Supports both MonoBehaviour-based and plain C# object pools.
     /// </summary>
-    public class PoolManager : MonoBehaviour, IPoolManager
+    public class PoolManager : IPoolManager
     {
         private readonly Dictionary<string, object> _pools = new();
 

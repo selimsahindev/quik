@@ -1,9 +1,21 @@
+using System;
+using quik.Runtime.Core.Interfaces;
+
 namespace quik.Runtime.SaveSystem.Models
 {
-    [System.Serializable]
-    public class CurrencyData
+    [Serializable]
+    public class CurrencyData : ICloneable<CurrencyData>
     {
-        public int coins = 0;
-        public int gems = 0;
+        public int coins;
+        public int gems;
+        
+        public CurrencyData Clone()
+        {
+            return new CurrencyData
+            {
+                coins = coins,
+                gems = gems
+            };
+        }
     }
 }

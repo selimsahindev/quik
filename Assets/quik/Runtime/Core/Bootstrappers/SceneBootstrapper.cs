@@ -5,17 +5,19 @@ using UnityEngine;
 
 namespace quik.Runtime.Core.Bootstrappers
 {
-    public class SceneBootstrapper : MonoBehaviour
+    public class SceneBootstrapper : MonoSingleton<SceneBootstrapper>
     {
         [SerializeField] private SceneServiceConfig config;
 
         private ServiceProvider _sceneServiceProvider;
 
-        private void Awake()
+        protected override void Awake()
         {
-            InitializeServiceProvider();
-            RegisterServices();
-            InjectSceneObjects();
+            base.Awake();
+            
+            /* 1 */ InitializeServiceProvider();
+            /* 2 */ RegisterServices();
+            /* 3 */ InjectSceneObjects();
         }
 
         private void InitializeServiceProvider()

@@ -14,12 +14,11 @@ namespace quik.Runtime.SaveSystem.Interfaces
 
         /// <summary>
         /// Loads data of type T associated with the given key. 
-        /// Returns the default value if the key does not exist.
+        /// Returns the default game data if the key does not exist.
         /// </summary>
         /// <param name="key">The key to retrieve data from.</param>
-        /// <param name="defaultValue">The value to return if the key is not found.</param>
         /// <returns>The deserialized data of type T.</returns>
-        T Load<T>(string key, T defaultValue = default);
+        T Load<T>(string key);
         
         /// <summary>
         /// Checks whether a key exists in the storage system.

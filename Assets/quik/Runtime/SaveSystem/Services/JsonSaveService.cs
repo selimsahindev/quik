@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using quik.Runtime.SaveSystem.Converters;
 using quik.Runtime.SaveSystem.Interfaces;
 using quik.Runtime.SaveSystem.Models;
+using quik.Runtime.Services;
 using UnityEngine;
 
 namespace quik.Runtime.SaveSystem.Services
@@ -12,6 +13,8 @@ namespace quik.Runtime.SaveSystem.Services
         private const int CurrentVersion = 1;
         
         private readonly string _savePath = Application.persistentDataPath;
+        
+        private readonly IDefaultDataService _defaultDataService = ServiceLocator.Resolve<IDefaultDataService>();
         
         private readonly JsonSerializerSettings _settings = new()
         {
@@ -40,15 +43,17 @@ namespace quik.Runtime.SaveSystem.Services
             File.WriteAllText(path, json);
         }
 
-        public T Load<T>(string key, T defaultValue = default)
+        public T Load<T>(string key)
         {
             var path = Path.Combine(_savePath, key + ".json");
 
             if (!File.Exists(path))
             {
-                return defaultValue;
+                var defaultData = _defaultDataService.GetDefaultData<T>();
+                Save(key, defaultData);
+                return defaultData;
             }
-
+            
             var json = File.ReadAllText(path);
             var data = JsonConvert.DeserializeObject<T>(json, _settings);
 
@@ -61,7 +66,6 @@ namespace quik.Runtime.SaveSystem.Services
             if (saveData.meta.saveVersion >= CurrentVersion) return data;
             saveData = MigrateSaveData(saveData);
             return (T)(object)saveData;
-
         }
 
         public bool HasKey(string key)

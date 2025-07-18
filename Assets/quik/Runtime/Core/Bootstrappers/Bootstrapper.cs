@@ -1,3 +1,7 @@
+using quik.Runtime.Localization.Interfaces;
+using quik.Runtime.SaveSystem.Constants;
+using quik.Runtime.SaveSystem.Interfaces;
+using quik.Runtime.SaveSystem.Models;
 using quik.Runtime.Services;
 using quik.Runtime.Services.Interfaces;
 using UnityEngine;
@@ -13,17 +17,19 @@ namespace quik.Runtime.Core.Bootstrappers
         
         protected override void Awake()
         {
-            InitializeServiceProvider();
-            InitializeServiceLocator();
-            RegisterGlobalServices();
-            InjectSceneObjects();
-            LoadNextScene();
+            base.Awake();
+            
+            /* 1 */ InitializeServiceProvider();
+            /* 2 */ InitializeServiceLocator();
+            /* 3 */ RegisterGlobalServices();
+            /* 4 */ InjectSceneObjects();
+            /* 5 */ SetupLocalization();
+            /* 6 */ LoadNextScene();
         }
 
         private void InitializeServiceProvider()
         {
             _provider = new ServiceProvider();
-            ServiceLocator.Init(_provider);
         }
 
         private void InitializeServiceLocator()
@@ -47,9 +53,28 @@ namespace quik.Runtime.Core.Bootstrappers
             }
         }
 
-        private void LoadNextScene()
+        private void SetupLocalization()
         {
-            // TODO: Load the next scene
+            const string errorMessage = "[Bootstrapper] Failed to resolve {0}.";
+            
+            if (!_provider.TryResolve(out ILocalizationManager localization))
+            {
+                Debug.LogError(string.Format(errorMessage, nameof(ILocalizationManager)));
+            }
+
+            if (!_provider.TryResolve(out ISaveService saveService))
+            {
+                Debug.LogError(string.Format(errorMessage, nameof(ISaveService)));
+            }
+            
+            var data = saveService.Load<GameData>(Keys.GameData);
+            
+            localization.Load(data.settings.language);
+        }
+
+        private static void LoadNextScene()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

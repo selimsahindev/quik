@@ -1,3 +1,4 @@
+using quik.Runtime.Localization.Interfaces;
 using quik.Runtime.Pooling;
 using quik.Runtime.Pooling.Interfaces;
 using quik.Runtime.SaveSystem.Interfaces;
@@ -16,7 +17,9 @@ namespace quik.Runtime.Services
             
             provider.Register<IDemoService, DemoService>();
             provider.Register<IPoolManager, PoolManager>();
+            provider.Register<IDefaultDataService, DefaultDataService>();
             provider.Register<ISaveService, JsonSaveService>();
+            provider.Register<ILocalizationManager, LocalizationManager>();
         }
     }
 }
