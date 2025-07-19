@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    [CreateAssetMenu(menuName = "quik/Game Data Asset", fileName = "GameData")]
+    [CreateAssetMenu(menuName = "quik/Data/Game Data Asset", fileName = "GameData")]
     public class GameDataAsset : ScriptableObject
     {
         public GameData data = new();

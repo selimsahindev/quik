@@ -50,12 +50,12 @@ namespace quik.Runtime.Services.Interfaces
         /// <returns>The resolved service instance.</returns>
         /// <exception cref="InvalidOperationException">Thrown if no service is registered for the given type.</exception>
         TInterface Resolve<TInterface>();
-        
+
         /// <summary>
         /// Checks whether a service is registered under the specified interface type.
         /// </summary>
         /// <typeparam name="TInterface">The interface type to check.</typeparam>
         /// <returns>True if the service is registered; otherwise, false.</returns>
-        bool Contains<TInterface>();
+        bool Contains(Type type);
     }
 }

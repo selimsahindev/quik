@@ -1,4 +1,5 @@
 using System;
+using quik.Runtime.Core;
 using UnityEngine;
 using IServiceProvider = quik.Runtime.Services.Interfaces.IServiceProvider;
 
@@ -11,21 +12,21 @@ namespace quik.Runtime.Services
     /// Initialize it once via <see cref="Init"/> (typically in a bootstrap scene),
     /// and access services anywhere using static methods like <see cref="Resolve{T}"/>.
     /// </summary>
-    public static class ServiceLocator
+    public class ServiceLocator : Singleton<ServiceLocator>
     {
-        private static IServiceProvider _provider;
+        private IServiceProvider _provider;
         
         /// <summary>
         /// Initializes the global service provider. Should only be called once, typically from Bootstrapper.
         /// </summary>
         public static void Init(IServiceProvider provider)
         {
-            if (_provider != null)
+            if (Instance._provider != null)
             {
                 Debug.LogWarning("[ServiceLocator] Already initialized. Reinitialization may lead to inconsistent behavior.");
             }
 
-            _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+            Instance._provider = provider ?? throw new ArgumentNullException(nameof(provider));
         }
         
         /// <summary>
@@ -41,7 +42,7 @@ namespace quik.Runtime.Services
         /// <summary>
         /// Returns true if a service of the specified type has been registered.
         /// </summary>
-        public static bool Contains<T>() => Require().Contains<T>();
+        public static bool Contains(Type type) => Require().Contains(type);
 
         /// <summary>
         /// Registers a new service with the global provider.
@@ -58,12 +59,12 @@ namespace quik.Runtime.Services
         /// </summary>
         private static IServiceProvider Require()
         {
-            if (_provider == null)
+            if (Instance._provider == null)
             {
                 throw new InvalidOperationException("[ServiceLocator] Provider not initialized. Call Init() first.");
             }
 
-            return _provider;
+            return Instance._provider;
         }
     }
 }

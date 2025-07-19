@@ -11,7 +11,7 @@ namespace quik.Runtime.Services
         
         public void Register<TInterface>(object implementation)
         {
-            Type interfaceType = typeof(TInterface);
+            var interfaceType = typeof(TInterface);
 
             if (!IsValidImplementation(interfaceType, implementation))
             {
@@ -43,14 +43,16 @@ namespace quik.Runtime.Services
         
         public bool TryResolve<TInterface>(out TInterface implementation)
         {
-            if (_services.TryGetValue(typeof(TInterface), out var value))
+            try
             {
-                implementation = (TInterface)value;
+                implementation = Resolve<TInterface>();
                 return true;
             }
-
-            implementation = default;
-            return false;
+            catch (ServiceNotFoundException)
+            {
+                implementation = default;
+                return false;
+            }
         }
         
         public TInterface Resolve<TInterface>()
@@ -60,12 +62,19 @@ namespace quik.Runtime.Services
                 return (TInterface)value;
             }
 
-            throw new InvalidOperationException($"Service of type {typeof(TInterface).Name} not found.");
+            // Fallback: try to resolve the service from the global (application-wide) service locator.
+            // Note: This introduces a second lookup that might be redundant for global service provider.
+            if (ServiceLocator.TryResolve<TInterface>(out var service))
+            {
+                return service;
+            }
+
+            throw new ServiceNotFoundException(typeof(TInterface));
         }
         
-        public bool Contains<TInterface>()
+        public bool Contains(Type type)
         {
-            return _services.ContainsKey(typeof(TInterface));
+            return _services.ContainsKey(type);
         }
         
         private bool IsValidImplementation(Type interfaceType, object implementation)

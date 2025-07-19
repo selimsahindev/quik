@@ -1,12 +1,17 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using quik.Runtime.Signals.Interfaces;
 
 namespace quik.Runtime.Signals
 {
-    public class SignalBus : MonoBehaviour
+    public class SignalBus : ISignalBus
     {
-        private readonly Dictionary<Type, List<Delegate>> _listeners = new();
+        private readonly Dictionary<Type, List<Delegate>> _listeners;
+
+        public SignalBus()
+        {
+            _listeners = new Dictionary<Type, List<Delegate>>();
+        }
 
         public void Subscribe<T>(Action<T> callback) where T : ISignal
         {

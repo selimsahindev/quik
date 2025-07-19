@@ -18,11 +18,15 @@ namespace quik.Runtime.Core.Bootstrappers
         protected override void Awake()
         {
             base.Awake();
-            
+            Run();
+        }
+
+        private void Run()
+        {
             /* 1 */ InitializeServiceProvider();
             /* 2 */ InitializeServiceLocator();
             /* 3 */ RegisterGlobalServices();
-            /* 4 */ InjectSceneObjects();
+            /* 4 */ InjectSceneDependencies();
             /* 5 */ SetupLocalization();
             /* 6 */ LoadNextScene();
         }
@@ -42,7 +46,7 @@ namespace quik.Runtime.Core.Bootstrappers
             GlobalServiceRegistry.RegisterAll(_provider);
         }
         
-        private void InjectSceneObjects()
+        private void InjectSceneDependencies()
         {
             foreach (var mono in FindObjectsOfType<MonoBehaviour>(true))
             {
@@ -79,7 +83,7 @@ namespace quik.Runtime.Core.Bootstrappers
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            InjectSceneObjects();
+            InjectSceneDependencies();
         }
 
         private void OnEnable()

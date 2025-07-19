@@ -1,9 +1,11 @@
 using UnityEngine;
 
-namespace uniq.Demo
+namespace quik.Demo
 {
     public class DemoService : IDemoService
     {
+        public DemoService() { }
+
         public void SayQuik()
         {
             Debug.Log("make it quik.");

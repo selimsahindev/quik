@@ -1,4 +1,4 @@
-namespace uniq.Demo
+namespace quik.Demo
 {
     public interface IDemoService
     {

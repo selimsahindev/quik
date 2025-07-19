@@ -9,7 +9,7 @@ namespace quik.Runtime.Core
         /// <summary>
         /// Override this in derived class to control persistence.
         /// </summary>
-        protected virtual bool PersistThroughScenes => true;
+        protected virtual bool PersistThroughScenes => false;
 
         protected virtual void Awake()
         {

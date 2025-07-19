@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using quik.Runtime.Services.Interfaces;
 using UnityEditor;
 using UnityEngine;
@@ -21,15 +22,16 @@ namespace quik.Runtime.Services
         /// <param name="provider">The service provider to register the service with.</param>
         public void RegisterTo(IServiceProvider provider)
         {
-            if (script == null)
+            if (!TryGetInterfaceType(out var interfaceType))
             {
+                Debug.LogWarning($"[{nameof(SerializedServiceEntry)}] script doesn't implement a usable interface.");
                 return;
             }
-
-            var type = script.GetClass();
-            if (type == null)
+            
+            var concreteType = script.GetClass();
+            if (concreteType == null)
             {
-                Debug.LogWarning("[SerializedServiceEntry] Script has no class.");
+                Debug.LogWarning($"[{nameof(SerializedServiceEntry)}] Script has no valid class.");
                 return;
             }
             
@@ -38,49 +40,44 @@ namespace quik.Runtime.Services
             
             try
             {
-                instance = Activator.CreateInstance(type);
+                instance = Activator.CreateInstance(concreteType);
             }
             catch (Exception e)
             {
-                Debug.LogError($"[SerializedServiceEntry] Failed to create instance of {type.Name}: {e.Message}");
+                Debug.LogError($"[{nameof(SerializedServiceEntry)}] Failed to create instance of {interfaceType.Name}: {e.Message}");
                 return;
             }
 
             if (instance == null)
             {
-                Debug.LogError($"[SerializedServiceEntry] Could not instantiate {type.Name}");
+                Debug.LogError($"[{nameof(SerializedServiceEntry)}] Could not instantiate {interfaceType.Name}");
                 return;
             }
             
-            var interfaces = type.GetInterfaces();
-            Type interfaceType = null;
+            provider.Register(interfaceType, instance);
+            Debug.Log($"[{nameof(SerializedServiceEntry)}] Registered {interfaceType.Name} from script {interfaceType.Name}");
+        }
+        
+        public bool TryGetInterfaceType(out Type interfaceType)
+        {
+            interfaceType = null;
+            
+            if (script == null)
+            {
+                return false;
+            }
             
             if (!string.IsNullOrEmpty(interfaceTypeName))
             {
                 interfaceType = Type.GetType(interfaceTypeName);
+                return interfaceType != null;
             }
             
-            if (interfaceType == null)
-            {
-                foreach (var i in interfaces)
-                {
-                    if (i != typeof(IInjectable) && i != typeof(IDisposable))
-                    {
-                        interfaceType = i;
-                        break;
-                    }
-                }
-            }
+            interfaceType = script.GetClass()
+                .GetInterfaces()
+                .FirstOrDefault(i => i != typeof(IInjectable) && i != typeof(IDisposable));
             
-            if (interfaceType != null)
-            {
-                provider.Register(interfaceType, instance);
-                Debug.Log($"[SerializedServiceEntry] Registered {interfaceType.Name} from script {type.Name}");
-            }
-            else
-            {
-                Debug.LogWarning($"[SerializedServiceEntry] {type.Name} doesn't implement a usable interface.");
-            }
+            return interfaceType != null;
         }
     }
 }

@@ -8,16 +8,20 @@ namespace quik.Runtime.Core.Bootstrappers
     public class SceneBootstrapper : MonoSingleton<SceneBootstrapper>
     {
         [SerializeField] private SceneServiceConfig config;
-
+        
         private ServiceProvider _sceneServiceProvider;
 
         protected override void Awake()
         {
             base.Awake();
-            
+            Run();
+        }
+
+        private void Run()
+        {
             /* 1 */ InitializeServiceProvider();
             /* 2 */ RegisterServices();
-            /* 3 */ InjectSceneObjects();
+            /* 3 */ InjectSceneDependencies();
         }
 
         private void InitializeServiceProvider()
@@ -30,14 +34,16 @@ namespace quik.Runtime.Core.Bootstrappers
             config.RegisterAll(_sceneServiceProvider);
         }
         
-        private void InjectSceneObjects()
+        private void InjectSceneDependencies()
         {
             foreach (var mono in FindObjectsOfType<MonoBehaviour>(true))
             {
-                if (mono is IInjectable injectable)
+                if (mono is not ISceneInjectable sceneInjectable)
                 {
-                    injectable.Inject(_sceneServiceProvider);
+                    continue;
                 }
+                
+                sceneInjectable.Inject(_sceneServiceProvider);
             }
         }
     }
