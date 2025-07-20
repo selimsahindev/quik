@@ -3,6 +3,7 @@ using quik.Runtime.SaveSystem.Constants;
 using quik.Runtime.SaveSystem.Interfaces;
 using quik.Runtime.SaveSystem.Models;
 using quik.Runtime.Services;
+using quik.Runtime.Services.Enums;
 using quik.Runtime.Services.Interfaces;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -33,7 +34,7 @@ namespace quik.Runtime.Core.Bootstrappers
 
         private void InitializeServiceProvider()
         {
-            _provider = new ServiceProvider();
+            _provider = ServiceProvider.Create(ProviderScope.Global);
         }
 
         private void InitializeServiceLocator()

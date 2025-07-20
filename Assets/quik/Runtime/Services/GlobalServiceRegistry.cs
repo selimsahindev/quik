@@ -1,4 +1,3 @@
-using quik.Demo;
 using quik.Runtime.Achievements;
 using quik.Runtime.Achievements.Interfaces;
 using quik.Runtime.Localization.Interfaces;

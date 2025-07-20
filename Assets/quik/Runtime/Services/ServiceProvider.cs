@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using quik.Runtime.Services.Enums;
 using UnityEngine;
 using IServiceProvider = quik.Runtime.Services.Interfaces.IServiceProvider;
 
@@ -8,7 +9,18 @@ namespace quik.Runtime.Services
     public class ServiceProvider : IServiceProvider
     {
         private readonly Dictionary<Type, object> _services = new();
+        private readonly ProviderScope _scope;
         
+        private ServiceProvider(ProviderScope scope)
+        {
+            _scope = scope;
+        }
+
+        public static ServiceProvider Create(ProviderScope scope)
+        {
+            return new ServiceProvider(scope);
+        }
+
         public void Register<TInterface>(object implementation)
         {
             var interfaceType = typeof(TInterface);
@@ -63,12 +75,13 @@ namespace quik.Runtime.Services
             }
 
             // Fallback: try to resolve the service from the global (application-wide) service locator.
-            // Note: This introduces a second lookup that might be redundant for global service provider.
-            if (ServiceLocator.TryResolve<TInterface>(out var service))
+            // Note: Avoid resolving via the service locator if this is the global provider, as it would cause an infinite recursion.
+            var isSceneProvider = _scope == ProviderScope.Scene;
+            if (isSceneProvider && ServiceLocator.TryResolve<TInterface>(out var service))
             {
                 return service;
             }
-
+            
             throw new ServiceNotFoundException(typeof(TInterface));
         }
         

@@ -4,7 +4,10 @@ namespace quik.Demo
 {
     public class DemoService : IDemoService
     {
-        public DemoService() { }
+        public DemoService()
+        {
+            // Default constructor
+        }
 
         public void SayQuik()
         {

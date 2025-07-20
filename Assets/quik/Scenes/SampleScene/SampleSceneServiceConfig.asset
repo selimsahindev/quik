@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e36d7a731d348bf99a7a7f027375a3e, type: 3}
   m_Name: SampleSceneServiceConfig
   m_EditorClassIdentifier: 
-  services: []
+  services:
+  - script: {fileID: 11500000, guid: b2bcdb7f9af3b464390b71e9498165a5, type: 3}
+    interfaceTypeName: quik.Demo.IDemoService

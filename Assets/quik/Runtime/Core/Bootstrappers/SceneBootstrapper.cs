@@ -1,4 +1,5 @@
 using quik.Runtime.Services;
+using quik.Runtime.Services.Enums;
 using quik.Runtime.Services.Interfaces;
 using quik.Runtime.Services.Scriptables;
 using UnityEngine;
@@ -26,7 +27,7 @@ namespace quik.Runtime.Core.Bootstrappers
 
         private void InitializeServiceProvider()
         {
-            _sceneServiceProvider = new ServiceProvider();
+            _sceneServiceProvider = ServiceProvider.Create(ProviderScope.Scene);
         }
 
         private void RegisterServices()
@@ -38,12 +39,10 @@ namespace quik.Runtime.Core.Bootstrappers
         {
             foreach (var mono in FindObjectsOfType<MonoBehaviour>(true))
             {
-                if (mono is not ISceneInjectable sceneInjectable)
+                if (mono is ISceneInjectable sceneInjectable)
                 {
-                    continue;
+                    sceneInjectable.Inject(_sceneServiceProvider);
                 }
-                
-                sceneInjectable.Inject(_sceneServiceProvider);
             }
         }
     }

@@ -17,7 +17,7 @@ namespace quik.Demo
         {
             if (_demoService == null)
             {
-                Debug.Log("service is null");
+                Debug.Log("[DemoServiceUser] DemoService is null");
                 return;
             }
             _demoService.SayQuik();

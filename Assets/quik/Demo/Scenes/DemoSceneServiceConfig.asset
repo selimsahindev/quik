@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   services:
   - script: {fileID: 11500000, guid: b2bcdb7f9af3b464390b71e9498165a5, type: 3}
-    interfaceTypeName: uniq.Demo.IDemoService
+    interfaceTypeName: quik.Demo.IDemoService
