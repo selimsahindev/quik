@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3ea3c0578b234a48a6a0eeeb6c93fb6, type: 3}
   m_Name: Daily_Jump3Times
   m_EditorClassIdentifier: 
-  Id: 
-  Description: 
-  Reward: {fileID: 0}
-  Condition: {fileID: 0}
+  Id: 0
+  Description: Kill 10 enemies to get a reward!
+  Reward: {fileID: 11400000, guid: 221d194a2d1cd40a0b684fccd63872a6, type: 2}
+  Condition: {fileID: 11400000, guid: 4bcb0a2fdb0a847ac90222e634dbdea5, type: 2}

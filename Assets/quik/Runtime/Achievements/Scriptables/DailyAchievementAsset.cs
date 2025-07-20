@@ -1,4 +1,4 @@
-using quik.Runtime.Achievements.Interfaces;
+using quik.Runtime.Achievements.Scriptables.Conditions;
 using UnityEngine;
 
 namespace quik.Runtime.Achievements.Scriptables
@@ -9,6 +9,6 @@ namespace quik.Runtime.Achievements.Scriptables
         public string Id;
         public string Description;
         public RewardAsset Reward;
-        public IAchievementCondition Condition;
+        public ConditionBase Condition;
     }
 }

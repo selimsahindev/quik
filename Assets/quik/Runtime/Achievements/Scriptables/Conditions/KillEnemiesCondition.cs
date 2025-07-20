@@ -1,28 +1,43 @@
-using quik.Runtime.Achievements.Interfaces;
 using quik.Runtime.Signals.Gameplay;
 using quik.Runtime.Signals.Interfaces;
 using UnityEngine;
 
 namespace quik.Runtime.Achievements.Scriptables.Conditions
 {
-    public class KillEnemiesCondition : ScriptableObject, IAchievementCondition
+    [CreateAssetMenu(menuName = "quik/Achievements/Conditions/Kill Enemies Condition", fileName = "KillEnemiesCondition")]
+    public class KillEnemiesCondition : ConditionBase
     {
-        public int requiredKills = 10;
-        private int _currentKills;
+        [SerializeField] private int requiredKills = 10;
+        [SerializeField] private int currentKills;
         
-        public void SubscribeToSignal(ISignalBus signalBus)
+        public override void StartListening(ISignalBus signalBus)
         {
-            signalBus.Subscribe<EnemyKilledSignal>(OnSignalReceived);
+            signalBus.Subscribe<EnemyKilledSignal>(HandleEnemyKilled);
+        }
+        
+        public override bool IsCompleted() => currentKills >= requiredKills;
+
+        public override void ResetProgress() => currentKills = 0;
+
+        public override void TriggerConditionMet()
+        {
+            onConditionMet?.Invoke();
+            Debug.Log($"[{nameof(KillEnemiesCondition)}] Condition met!");
         }
 
-        public bool CheckCondition() => _currentKills >= requiredKills;
-
-        public void ResetProgress() => _currentKills = 0;
-
-        private void OnSignalReceived(EnemyKilledSignal signal)
+        private void HandleEnemyKilled(EnemyKilledSignal signal)
         {
-            _currentKills++;
-            Debug.Log($"[{nameof(KillEnemiesCondition)}] fired. Current kills: {_currentKills}");
+            if (IsCompleted())
+            {
+                return;
+            }
+            
+            currentKills++;
+            
+            if (IsCompleted())
+            {
+                TriggerConditionMet();
+            }
         }
     }
 }

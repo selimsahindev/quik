@@ -20,7 +20,7 @@ namespace quik.Runtime.Core
                 return;
             }
 
-            Instance = (T)this;
+            Instance = this as T;
 
             if (PersistThroughScenes)
             {

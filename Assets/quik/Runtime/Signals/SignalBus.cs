@@ -39,7 +39,10 @@ namespace quik.Runtime.Signals
             {
                 return;
             }
-            foreach (var callback in _listeners[type])
+            
+            // Iterate over a copy to avoid: "Collection was modified; enumeration operation may not execute." errors.
+            var listenersCopy = new List<Delegate>(_listeners[type]);
+            foreach (var callback in listenersCopy)
             {
                 ((Action<T>)callback)?.Invoke(signal);
             }

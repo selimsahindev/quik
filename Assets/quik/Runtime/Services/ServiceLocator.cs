@@ -12,7 +12,7 @@ namespace quik.Runtime.Services
     /// Initialize it once via <see cref="Init"/> (typically in a bootstrap scene),
     /// and access services anywhere using static methods like <see cref="Resolve{T}"/>.
     /// </summary>
-    public class ServiceLocator : Singleton<ServiceLocator>
+    public class ServiceLocator : MonoSingleton<ServiceLocator>
     {
         private IServiceProvider _provider;
         
@@ -23,7 +23,13 @@ namespace quik.Runtime.Services
         {
             if (Instance._provider != null)
             {
-                Debug.LogWarning("[ServiceLocator] Already initialized. Reinitialization may lead to inconsistent behavior.");
+                if (ReferenceEquals(Instance._provider, provider))
+                {
+                    return;
+                }
+
+                Debug.LogWarning($"[{nameof(ServiceLocator)}] Already initialized with a different provider.");
+                return;
             }
 
             Instance._provider = provider ?? throw new ArgumentNullException(nameof(provider));
@@ -61,7 +67,7 @@ namespace quik.Runtime.Services
         {
             if (Instance._provider == null)
             {
-                throw new InvalidOperationException("[ServiceLocator] Provider not initialized. Call Init() first.");
+                throw new InvalidOperationException($"[{nameof(ServiceLocator)}] Provider not initialized. Call Init() first.");
             }
 
             return Instance._provider;

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace quik.Runtime.Achievements.Scriptables
@@ -13,7 +12,7 @@ namespace quik.Runtime.Achievements.Scriptables
         {
             // Handle reward earning logic, for example:
             // PlayerInventory.Add(coins, gems);
-            throw new NotImplementedException();
+            Debug.Log($"Reward Granted: {coins} coins, {gems} gems!");
         }
     }
 }

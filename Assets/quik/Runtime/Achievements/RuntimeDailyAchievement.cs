@@ -5,28 +5,35 @@ namespace quik.Runtime.Achievements
 {
     public class RuntimeDailyAchievement : IAchievement
     {
-        private readonly DailyAchievementAsset _asset;
-
         public string Id => _asset.Id;
-        public bool IsCompleted => _asset.Condition.CheckCondition();
-                
+
+        private readonly DailyAchievementAsset _asset;
+        private string _rewardGranted1;
+
         public RuntimeDailyAchievement(DailyAchievementAsset asset)
         {
             _asset = asset;
-        }
-        
-        public void CheckProgress()
-        {
-            if (IsCompleted)
-            {
-                GrantReward();
-            }
+            _asset.Condition.onConditionMet += OnConditionMet;
         }
 
+        private void OnConditionMet()
+        {
+            CheckProgress();
+        }
+
+        public void CheckProgress()
+        {
+            if (_asset.Condition.IsCompleted())
+            {
+                GrantReward();
+                ResetProgress();
+            }
+        }
+        
         public void GrantReward()
         {
             _asset.Reward.Grant();
-            // TODO: Persist state
+            // TODO: Persist state!
         }
 
         public void ResetProgress()
