@@ -6,12 +6,7 @@ namespace quik.Runtime.Signals
 {
     public class SignalBus : ISignalBus
     {
-        private readonly Dictionary<Type, List<Delegate>> _listeners;
-
-        public SignalBus()
-        {
-            _listeners = new Dictionary<Type, List<Delegate>>();
-        }
+        private readonly Dictionary<Type, List<Delegate>> _listeners = new();
 
         public void Subscribe<T>(Action<T> callback) where T : ISignal
         {
