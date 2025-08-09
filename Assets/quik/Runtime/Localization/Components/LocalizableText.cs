@@ -1,5 +1,5 @@
 using quik.Runtime.Localization.Interfaces;
-using quik.Runtime.Services;
+using quik.Runtime.ServiceProvider;
 using TMPro;
 using UnityEngine;
 

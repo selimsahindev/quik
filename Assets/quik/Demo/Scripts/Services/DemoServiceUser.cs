@@ -1,6 +1,6 @@
-using quik.Runtime.Services.Interfaces;
+using quik.Runtime.ServiceProvider.Interfaces;
 using UnityEngine;
-using IServiceProvider = quik.Runtime.Services.Interfaces.IServiceProvider;
+using IServiceProvider = quik.Runtime.ServiceProvider.Interfaces.IServiceProvider;
 
 namespace quik.Demo
 {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using quik.Runtime.Achievements.Interfaces;
 using quik.Runtime.Achievements.Scriptables;
-using quik.Runtime.Services;
-using quik.Runtime.Services.Interfaces;
+using quik.Runtime.ServiceProvider;
+using quik.Runtime.ServiceProvider.Interfaces;
 using quik.Runtime.Signals.Interfaces;
 using UnityEngine;
 

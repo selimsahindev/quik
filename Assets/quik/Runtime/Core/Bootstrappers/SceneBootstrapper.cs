@@ -1,8 +1,9 @@
-using quik.Runtime.Services;
-using quik.Runtime.Services.Enums;
-using quik.Runtime.Services.Interfaces;
-using quik.Runtime.Services.Scriptables;
+using quik.Runtime.Core.Singletons;
+using quik.Runtime.ServiceProvider.Enums;
+using quik.Runtime.ServiceProvider.Interfaces;
+using quik.Runtime.ServiceProvider.Scriptables;
 using UnityEngine;
+using Provider = quik.Runtime.ServiceProvider.ServiceProvider;
 
 namespace quik.Runtime.Core.Bootstrappers
 {
@@ -10,7 +11,7 @@ namespace quik.Runtime.Core.Bootstrappers
     {
         [SerializeField] private SceneServiceConfig config;
         
-        private ServiceProvider _sceneServiceProvider;
+        private Provider _sceneServiceProvider;
 
         protected override void Awake()
         {
@@ -27,7 +28,7 @@ namespace quik.Runtime.Core.Bootstrappers
 
         private void InitializeServiceProvider()
         {
-            _sceneServiceProvider = ServiceProvider.Create(ProviderScope.Scene);
+            _sceneServiceProvider = Provider.Create(ProviderScope.Scene);
         }
 
         private void RegisterServices()

@@ -1,12 +1,14 @@
+using quik.Runtime.Core.Singletons;
 using quik.Runtime.Localization.Interfaces;
 using quik.Runtime.SaveSystem.Constants;
 using quik.Runtime.SaveSystem.Interfaces;
 using quik.Runtime.SaveSystem.Models;
-using quik.Runtime.Services;
-using quik.Runtime.Services.Enums;
-using quik.Runtime.Services.Interfaces;
+using quik.Runtime.ServiceProvider;
+using quik.Runtime.ServiceProvider.Enums;
+using quik.Runtime.ServiceProvider.Interfaces;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Provider = quik.Runtime.ServiceProvider.ServiceProvider;
 
 namespace quik.Runtime.Core.Bootstrappers
 {
@@ -14,7 +16,7 @@ namespace quik.Runtime.Core.Bootstrappers
     {
         protected override bool PersistThroughScenes => true;
         
-        private ServiceProvider _provider;
+        private Provider _provider;
         
         protected override void Awake()
         {
@@ -34,7 +36,7 @@ namespace quik.Runtime.Core.Bootstrappers
 
         private void InitializeServiceProvider()
         {
-            _provider = ServiceProvider.Create(ProviderScope.Global);
+            _provider = Provider.Create(ProviderScope.Global);
         }
 
         private void InitializeServiceLocator()
